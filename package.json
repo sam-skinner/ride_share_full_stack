@@ -1,0 +1,20 @@
+{
+  "dependencies": {
+    "@hapi/hapi": "^18.4.0",
+    "@hapi/joi": "^16.1.7",
+    "hapi-pino": "^6.3.0",
+    "knex": "^0.19.4",
+    "objection": "^1.6.11",
+    "pg": "^7.12.1"
+  },
+  "name": "ride_share_model",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^1.19.4"
+  },
+  "scripts": {
+    "watch": "nodemon hapi-server.js"
+  }
+}

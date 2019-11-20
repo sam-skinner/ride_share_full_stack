@@ -1,0 +1,59 @@
+DRIVER:
+Create a driver - POST - /driver
+    {"firstName": "Sam", "lastName": "Skinner", "phone": "3093361702", "licenseNumber": "S5830485432"}
+
+Read a driver - GET - /driver/:id
+    {}
+
+Update a driver - PUT - /driver/:id
+    {"firstName": "Sam", "lastName": "Skinner", "phone": "5483251245", "licenseNumber": "S5830485432"}
+
+VEHICLE:
+Create a vehicle - POST - /vehicle
+    {"make":"Mitsubishi", "model": "Outlander", "color": "Silver", "vehicleTypeId": 17, "capacity": 5, "mpg": 24.7, "licenseState": "IL", "licenseNumber": "V71 3327"}
+
+Read a vehicle - GET - /vehicle/:id
+    {}
+
+Update a vehicle - PUT - /vehicle/:id
+    {"make":"Mitsubishi", "model": "Outlander", "color": "Silver", "vehicleTypeId": 17, "capacity": 5, "mpg": 24.7, "licenseState": "IN", "licenseNumber": "F35 3892"}    
+
+PASSENGER:
+Create a passenger - POST - /passenger
+    {"firstName": "Jacob", "lastName": "Banks", "phone": "1252861054"}
+
+Read a passenger - GET - /passenger/:id
+    {}
+
+Update a passenger - PUT - /passenger/:id
+    {"firstName": "Jacob", "lastName": "Banks", "phone": "7831594592"} 
+
+RIDE:
+Create a ride - POST - /ride
+    {"date": 10/21/2019, "time": 9:00, "distance": 3.7, "fuelPrice": 2.67, "fee": 3.25, "vehicleId": 2, "fromLocationId": 3, "toLocationId": 8}
+
+Read a ride - GET - /ride/:id
+    {}
+
+Update a ride - PUT - /ride/:id
+    {"date": 10/21/2019, "time": 11:00, "distance": 3.7, "fuelPrice": 2.67, "fee": 3.25, "vehicleId": 2, "fromLocationId": 3, "toLocationId": 8} 
+
+AUTHORIZATION:
+Authorize a driver for a vehicle - POST - /authorization
+    {"driverId": 5, "vehicleId": 2}
+
+Deauthorize a driver for a vehicle - DELETE - /authorization/:driverId/:vehicleId
+    {}
+
+DRIVERS:
+Assign an authorized driver for a ride - POST - /drivers
+    {"driverId": 5, "rideId": 4532}
+
+Remove an authorized driver from a ride - POST - /drivers/:driverId/:rideId
+    {}
+
+
+Authorize driver 5 to drive vehicle 2:
+    POST("/authorization", {"driverId": 5, "vehicleId": 2})
+Create a ride associated with vehicle 2:
+    POST("/ride", {"date": 10/21/2019, "time": 9:00, "distance": 3.7, "fuelPrice": 2.67, "fee": 3.25, "vehicleId": 2, "fromLocationId": 3, "toLocationId": 8})
