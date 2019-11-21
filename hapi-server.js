@@ -38,8 +38,22 @@ const server = Hapi.server({
     }
   });
 
-async function init() {    
-    await server.start();
+async function init() {
+  // Configure routes
+  server.route([
+    {
+      method: "GET",
+      path: "/drivers",
+      config: {
+        description: "Retrieve all drivers",
+      },
+      handler: (request, h) => {
+        return Driver.query();
+      }
+    }
+  ]);
+
+  await server.start();
 }
 
 init();
