@@ -1,4 +1,6 @@
 const { Model } = require('objection');
+const Driver = require("./Driver");
+const Ride = require("./Ride");
 
 class Drivers extends Model {
     static get tableName() {

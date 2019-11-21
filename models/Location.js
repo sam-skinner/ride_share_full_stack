@@ -1,4 +1,6 @@
 const { Model } = require('objection');
+const State = require("./State");
+const Ride = require("./Ride");
 
 class Location extends Model {
     static get tableName() {

@@ -1,4 +1,5 @@
 const { Model } = require('objection');
+const Vehicle = require("./Vehicle");
 
 class VehicleType extends Model {
     static get tableName() {

@@ -71,22 +71,46 @@ async function init() {
             make: Joi.string().required(),
             model: Joi.string().required(),
             color: Joi.string().required(),
-            vehicleTypeId: Joi.number().integer().required(),
+            vehicle_type_id: Joi.number().integer().required(),
             capacity: Joi.number().integer().required(),
             mpg: Joi.number().required(),
-            licenseState: Joi.string().required(),
-            licenseNumber: Joi.string().required()
+            license_state: Joi.string().required(),
+            license_number: Joi.string().required()
           })
         },
         handler: async (request, h) => {
           const existingVehicle = await Vehicle.query()
-            .where("licenseState", request.payload.licenseState)
-            .andWhere("licenseNumber", request.payload.licenseNumber)
+            .where("license_state", request.payload.license_state)
+            .andWhere("license_number", request.payload.license_number)
             .first();
+
           if (existingVehicle) {
             return {
               ok: false,
               msge: 'Vehicle with license plate ${request.payload.licenseNumber} from ${request.payload.licenseState} already registered.'
+            };
+          }
+
+          const newVehicle = await Vehicle.query().insert({
+            make: request.payload.make,
+            model: request.payload.model,
+            color: request.payload.color,
+            vehicle_type_id: request.payload.vehicle_type_id,
+            capacity: request.payload.capacity,
+            mpg: request.payload.mpg,
+            license_state: request.payload.license_state,
+            license_number: request.payload.license_number
+          });
+
+          if (newVehicle) {
+            return {
+              ok: true,
+              msge: 'Created vehicle'
+            };
+          } else {
+            return {
+              ok: false,
+              msge: 'Could not create vehicle'
             };
           }
         }

@@ -1,4 +1,6 @@
 const { Model } = require('objection');
+const Passenger = require("./Passenger");
+const Ride = require("./Ride");
 
 class Passengers extends Model {
     static get tableName() {
