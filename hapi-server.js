@@ -50,6 +50,47 @@ async function init() {
       handler: (request, h) => {
         return Driver.query();
       }
+    },
+    {
+      method: "GET",
+      path: "/vehicles",
+      config: {
+        description: "Retrieve all vehicles",
+      },
+      handler: (request, h) => {
+        return Vehicle.query();
+      }
+    },
+    {
+      method: "POST",
+      path: "/vehicles",
+      config: {
+        description: "Add a new vehicle",
+        validate: {
+          payload: Joi.object({
+            make: Joi.string().required(),
+            model: Joi.string().required(),
+            color: Joi.string().required(),
+            vehicleTypeId: Joi.number().integer().required(),
+            capacity: Joi.number().integer().required(),
+            mpg: Joi.number().required(),
+            licenseState: Joi.string().required(),
+            licenseNumber: Joi.string().required()
+          })
+        },
+        handler: async (request, h) => {
+          const existingVehicle = await Vehicle.query()
+            .where("licenseState", request.payload.licenseState)
+            .andWhere("licenseNumber", request.payload.licenseNumber)
+            .first();
+          if (existingVehicle) {
+            return {
+              ok: false,
+              msge: 'Vehicle with license plate ${request.payload.licenseNumber} from ${request.payload.licenseState} already registered.'
+            };
+          }
+        }
+      }
     }
   ]);
 
