@@ -8,9 +8,9 @@
 
     <v-spacer></v-spacer>
 
-    <v-btn text v-bind:to="{ name: 'sign-up' }">Sign Up</v-btn>
+    <!-- <v-btn text v-bind:to="{ name: 'sign-up' }">Sign Up</v-btn>
     <v-btn text v-bind:to="{ name: 'sign-in' }">Sign In</v-btn>
-    <v-btn text v-bind:to="{ name: 'about-us' }">About Us</v-btn>
+    <v-btn text v-bind:to="{ name: 'about-us' }">About Us</v-btn> -->
 
     <v-menu offset-y>
       <template v-slot:activator="{ on }">
@@ -21,8 +21,8 @@
       </template>
 
       <v-list>
-        <v-list-item v-bind:to="{ name: 'accounts' }">
-          <v-list-item-title>Accounts</v-list-item-title>
+        <v-list-item v-bind:to="{ name: 'vehicles' }">
+          <v-list-item-title>Vehicles</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
