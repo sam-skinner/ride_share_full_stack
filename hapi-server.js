@@ -53,12 +53,42 @@ async function init() {
     },
     {
       method: "GET",
-      path: "/vehicles",
+      path: "/rides",
       config: {
-        description: "Retrieve all vehicles",
+        description: "Retrieve all rides",
       },
       handler: (request, h) => {
-        return Vehicle.query();
+        return Ride.query();
+      }
+    },
+    {
+      method: "GET",
+      path: "/locations",
+      config: {
+        description: "Retrieve all locations",
+      },
+      handler: (request, h) => {
+        return Location.query();
+      }
+    },
+    {
+      method: "GET",
+      path: "/passengers",
+      config: {
+        description: "Retrieve all passengers",
+      },
+      handler: (request, h) => {
+        return Passenger.query();
+      }
+    },
+    {
+      method: "GET",
+      path: "/states",
+      config: {
+        description: "Retrieve all states",
+      },
+      handler: (request, h) => {
+        return State.query();
       }
     },
     {
