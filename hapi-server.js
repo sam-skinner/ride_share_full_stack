@@ -92,6 +92,26 @@ async function init() {
       }
     },
     {
+      method: "GET",
+      path: "/vehicle-types",
+      config: {
+        description: "Retrieve all vehicle types",
+      },
+      handler: (request, h) => {
+        return VehicleType.query();
+      }
+    },
+    {
+      method: "GET",
+      path: "/vehicles",
+      config: {
+        description: "Retrieve all vehicles",
+      },
+      handler: (request, h) => {
+        return Vehicle.query();
+      }
+    },
+    {
       method: "POST",
       path: "/vehicles",
       config: {
@@ -121,6 +141,9 @@ async function init() {
             };
           }
 
+          //FIXME
+          console.log('before');
+
           const newVehicle = await Vehicle.query().insert({
             make: request.payload.make,
             model: request.payload.model,
@@ -131,6 +154,8 @@ async function init() {
             license_state: request.payload.license_state,
             license_number: request.payload.license_number
           });
+
+          console.log('after');
 
           if (newVehicle) {
             return {

@@ -9,8 +9,6 @@ create table if not exists driver
 	license_number varchar
 );
 
-alter table driver owner to samuel_skinner;
-
 create table if not exists passenger
 (
 	id integer not null
@@ -21,8 +19,6 @@ create table if not exists passenger
 	phone varchar
 );
 
-alter table passenger owner to samuel_skinner;
-
 create table if not exists vehicle_type
 (
 	id integer not null
@@ -30,8 +26,6 @@ create table if not exists vehicle_type
 			primary key,
 	type varchar
 );
-
-alter table vehicle_type owner to samuel_skinner;
 
 create table if not exists vehicle
 (
@@ -50,8 +44,6 @@ create table if not exists vehicle
 	license_number varchar
 );
 
-alter table vehicle owner to samuel_skinner;
-
 create table if not exists "authorization"
 (
 	driver_id integer
@@ -62,8 +54,6 @@ create table if not exists "authorization"
 			references vehicle
 );
 
-alter table "authorization" owner to samuel_skinner;
-
 create table if not exists state
 (
 	abbreviation varchar not null
@@ -71,8 +61,6 @@ create table if not exists state
 			primary key,
 	name varchar
 );
-
-alter table state owner to samuel_skinner;
 
 create table if not exists location
 (
@@ -87,8 +75,6 @@ create table if not exists location
 			references state,
 	zip_code varchar
 );
-
-alter table location owner to samuel_skinner;
 
 create table if not exists ride
 (
@@ -111,8 +97,6 @@ create table if not exists ride
 			references location
 );
 
-alter table ride owner to samuel_skinner;
-
 create table if not exists passengers
 (
 	passenger_id integer
@@ -123,8 +107,6 @@ create table if not exists passengers
 			references ride
 );
 
-alter table passengers owner to samuel_skinner;
-
 create table if not exists drivers
 (
 	driver_id integer
@@ -134,6 +116,3 @@ create table if not exists drivers
 		constraint ride_id
 			references ride
 );
-
-alter table drivers owner to samuel_skinner;
-
