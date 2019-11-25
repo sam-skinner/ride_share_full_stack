@@ -1,6 +1,6 @@
 create table if not exists driver
 (
-	id integer not null
+	id serial not null
 		constraint driver_pk
 			primary key,
 	first_name varchar,
@@ -11,7 +11,7 @@ create table if not exists driver
 
 create table if not exists passenger
 (
-	id integer not null
+	id serial not null
 		constraint passenger_pk
 			primary key,
 	first_name varchar,
@@ -21,7 +21,7 @@ create table if not exists passenger
 
 create table if not exists vehicle_type
 (
-	id integer not null
+	id serial not null
 		constraint vehicle_type_pk
 			primary key,
 	type varchar
@@ -29,7 +29,7 @@ create table if not exists vehicle_type
 
 create table if not exists vehicle
 (
-	id integer not null
+	id serial not null
 		constraint vehicle_pk
 			primary key,
 	make varchar,
@@ -54,7 +54,7 @@ create table if not exists "authorization"
 			references vehicle
 );
 
-create table if not exists state
+create table if not exists "state"
 (
 	abbreviation varchar not null
 		constraint state_pk
@@ -62,9 +62,9 @@ create table if not exists state
 	name varchar
 );
 
-create table if not exists location
+create table if not exists "location"
 (
-	id integer not null
+	id serial not null
 		constraint location_pk
 			primary key,
 	name varchar,
@@ -78,7 +78,7 @@ create table if not exists location
 
 create table if not exists ride
 (
-	id integer not null
+	id serial not null
 		constraint ride_pk
 			primary key,
 	date date,

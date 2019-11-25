@@ -39,6 +39,14 @@ const server = Hapi.server({
   });
 
 async function init() {
+  // Output logging information.
+  await server.register({
+    plugin: require("hapi-pino"),
+      options: {
+        prettyPrint: true
+      }
+    });
+
   // Configure routes
   server.route([
     {
