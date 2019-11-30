@@ -107,6 +107,52 @@ async function init() {
       }
     },
     {
+      method: "PUT",
+      path: "/drivers/{id}",
+      config: {
+        description: "Update a driver",
+        validate: {
+          payload: Joi.object({
+            first_name: Joi.string().required(),
+            last_name: Joi.string().required(),
+            phone: Joi.string().required(),
+            license_number: Joi.string().required()
+          })
+        },
+        handler: async (request, h) => {
+          const existingDriver = await Driver.query()
+            .where("id", request.params.id)
+            .first();
+
+          if (!existingDriver) {
+            return {
+              ok: false,
+              msge: `Driver with id '${request.params.id}' not found.`
+            };
+          }
+
+          const newDriver = await Driver.query().update({
+            first_name: request.payload.first_name,
+            last_name: request.payload.last_name,
+            phone: request.payload.phone,
+            license_number: request.payload.license_number
+          });
+
+          if (newDriver) {
+            return {
+              ok: true,
+              msge: 'Driver updated'
+            };
+          } else {
+            return {
+              ok: false,
+              msge: 'Could not update driver'
+            };
+          }
+        }
+      }
+    },
+    {
       method: "DELETE",
       path: "/drivers/{id}",
       config: {
@@ -185,6 +231,60 @@ async function init() {
       }
     },
     {
+      method: "PUT",
+      path: "/ride/{id}",
+      config: {
+        description: "Update a ride",
+        validate: {
+          payload: Joi.object({
+            date: Joi.string().date().required(),
+            time: Joi.string().time().required(),
+            distance: Joi.number(),
+            fuel_price: Joi.number(),
+            fee: Joi.number(),
+            vehicle_id: Joi.number().integer(),
+            from_location_id: Joi.string().integer().required(),
+            to_location_id: Joi.string().integer().required()
+          })
+        },
+        handler: async (request, h) => {
+          const existingRide = await Ride.query()
+            .where("id", request.params.id)
+            .first();
+
+          if (!existingRide) {
+            return {
+              ok: false,
+              msge: `Ride with id '${request.params.id}' not found.`
+            };
+          }
+
+          const newRide = await Ride.query().update({
+            date: request.payload.date,
+            time: request.payload.time,
+            distance: request.payload.distance,
+            fuel_price: request.payload.fuel_price,
+            fee: request.payload.fee,
+            vehicle_id: request.payload.vehicle_id,
+            from_location_id: request.payload.from_location_id,
+            to_location_id: request.payload.to_location_id
+          });
+
+          if (newRide) {
+            return {
+              ok: true,
+              msge: 'Ride updated'
+            };
+          } else {
+            return {
+              ok: false,
+              msge: 'Could not update ride'
+            };
+          }
+        }
+      }
+    },
+    {
       method: "DELETE",
       path: "/rides/{id}",
       config: {
@@ -251,7 +351,7 @@ async function init() {
             address: request.payload.address,
             city: request.payload.city,
             state: request.payload.state,
-            zip_code: request.payload.zip_code,
+            zip_code: request.payload.zip_code
           });
 
           if (newLocation) {
@@ -263,6 +363,54 @@ async function init() {
             return {
               ok: false,
               msge: 'Could not create location'
+            };
+          }
+        }
+      }
+    },
+    {
+      method: "PUT",
+      path: "/location/{id}",
+      config: {
+        description: "Update a location",
+        validate: {
+          payload: Joi.object({
+            name: Joi.string().required(),
+            address: Joi.string().required(),
+            city: Joi.string().required(),
+            state: Joi.number().integer().required(),
+            zip_code: Joi.number().integer().required()
+          })
+        },
+        handler: async (request, h) => {
+          const existingLocation = await Location.query()
+            .where("id", request.params.id)
+            .first();
+
+          if (!existingLocation) {
+            return {
+              ok: false,
+              msge: `Location with id '${request.params.id}' not found.`
+            };
+          }
+
+          const newLocation = await Location.query().update({
+            name: request.payload.name,
+            address: request.payload.address,
+            city: request.payload.city,
+            state: request.payload.state,
+            zip_code: request.payload.zip_code
+          });
+
+          if (newLocation) {
+            return {
+              ok: true,
+              msge: 'Location updated'
+            };
+          } else {
+            return {
+              ok: false,
+              msge: 'Could not update location'
             };
           }
         }
@@ -342,6 +490,50 @@ async function init() {
             return {
               ok: false,
               msge: 'Could not register passenger'
+            };
+          }
+        }
+      }
+    },
+    {
+      method: "PUT",
+      path: "/passenger/{id}",
+      config: {
+        description: "Update a passenger",
+        validate: {
+          payload: Joi.object({
+            first_name: Joi.string().required(),
+            last_name: Joi.string().required(),
+            phone: Joi.string().required()
+          })
+        },
+        handler: async (request, h) => {
+          const existingPassenger = await Passenger.query()
+            .where("id", request.params.id)
+            .first();
+
+          if (!existingPassenger) {
+            return {
+              ok: false,
+              msge: `Passenger with id '${request.params.id}' not found.`
+            };
+          }
+
+          const newLocation = await Location.query().update({
+            first_name: request.payload.first_name,
+            last_name: request.payload.last_name,
+            phone: request.payload.phone
+          });
+
+          if (newPassenger) {
+            return {
+              ok: true,
+              msge: 'Passenger updated'
+            };
+          } else {
+            return {
+              ok: false,
+              msge: 'Could not update passenger'
             };
           }
         }
@@ -476,6 +668,46 @@ async function init() {
       }
     },
     {
+      method: "PUT",
+      path: "/vehicle-types/{id}",
+      config: {
+        description: "Update a vehicle type",
+        validate: {
+          payload: Joi.object({
+            type: Joi.string().required()
+          })
+        },
+        handler: async (request, h) => {
+          const existingVehicleType = await VehicleType.query()
+            .where("id", request.params.id)
+            .first();
+
+          if (!existingVehicleType) {
+            return {
+              ok: false,
+              msge: `Vehicle Type with id '${request.params.id}' not found.`
+            };
+          }
+
+          const newVehicleType = await VehicleType.query().update({
+            type: request.payload.type
+          });
+
+          if (newVehicleType) {
+            return {
+              ok: true,
+              msge: 'Vehicle Type updated'
+            };
+          } else {
+            return {
+              ok: false,
+              msge: 'Could not update vehicle type'
+            };
+          }
+        }
+      }
+    },
+    {
       method: "DELETE",
       path: "/vehicle-types/{id}",
       config: {
@@ -560,6 +792,60 @@ async function init() {
             return {
               ok: false,
               msge: 'Could not create vehicle'
+            };
+          }
+        }
+      }
+    },
+    {
+      method: "PUT",
+      path: "/vehicles/{id}",
+      config: {
+        description: "Update a vehicle",
+        validate: {
+          payload: Joi.object({
+            make: Joi.string().required(),
+            model: Joi.string().required(),
+            color: Joi.string().required(),
+            vehicle_type_id: Joi.number().integer().required(),
+            capacity: Joi.number().integer().required(),
+            mpg: Joi.number().required(),
+            license_state: Joi.string().required(),
+            license_number: Joi.string().required()
+          })
+        },
+        handler: async (request, h) => {
+          const existingVehicle = await Vehicle.query()
+            .where("id", request.params.id)
+            .first();
+
+          if (!existingVehicle) {
+            return {
+              ok: false,
+              msge: `Vehicle with id '${request.params.id}' not found.`
+            };
+          }
+
+          const newVehicle = await Vehicle.query().update({
+            make: request.payload.make,
+            model: request.payload.model,
+            color: request.payload.color,
+            vehicle_type_id: request.payload.vehicle_type_id,
+            capacity: request.payload.capacity,
+            mpg: request.payload.mpg,
+            license_state: request.payload.license_state,
+            license_number: request.payload.license_number
+          });
+
+          if (newVehicle) {
+            return {
+              ok: true,
+              msge: 'Vehicle updated'
+            };
+          } else {
+            return {
+              ok: false,
+              msge: 'Could not update vehicle'
             };
           }
         }
