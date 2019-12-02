@@ -574,48 +574,6 @@ async function init() {
         return State.query();
       }
     },
-    {
-      method: "POST",
-      path: "/states",
-      config: {
-        description: "Add a new state",
-        validate: {
-          payload: Joi.object({
-            abbreviation: Joi.string().required(),
-            name: Joi.string().required()
-          })
-        },
-        handler: async (request, h) => {
-          const existingState = await State.query()
-            .where("abbreviation", request.payload.abbreviation)
-            .first();
-
-          if (existingState) {
-            return {
-              ok: false,
-              msge: `State with abbreviation '${request.payload.abbreviation}' already exists.`
-            };
-          }
-
-          const newState = await State.query().insert({
-            abbreviation: request.payload.abbreviation,
-            name: request.payload.name
-          });
-
-          if (newState) {
-            return {
-              ok: true,
-              msge: 'State created'
-            };
-          } else {
-            return {
-              ok: false,
-              msge: 'Could not create state'
-            };
-          }
-        }
-      }
-    },
     //VEHICLE_TYPE
     {
       method: "GET",
