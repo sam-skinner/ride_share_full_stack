@@ -131,11 +131,25 @@ async function init() {
             };
           }
 
-          const newDriver = await Driver.query().update({
-            first_name: request.payload.first_name,
-            last_name: request.payload.last_name,
-            phone: request.payload.phone,
-            license_number: request.payload.license_number
+          const sameLicense = await Driver.query()
+            .where("license_number", request.payload.license_number)
+            .andWhere("id","!=", request.params.id)
+            .first()
+
+          if (sameLicense) {
+            return {
+              ok: false,
+              msge: `Driver with license number '${request.payload.license_number}' already exists`
+            }
+          }
+
+          const newDriver = await Driver.query()
+            .where("id", request.params.id)
+            .update({
+              first_name: request.payload.first_name,
+              last_name: request.payload.last_name,
+              phone: request.payload.phone,
+              license_number: request.payload.license_number
           });
 
           if (newDriver) {
@@ -232,7 +246,7 @@ async function init() {
     },
     {
       method: "PUT",
-      path: "/ride/{id}",
+      path: "/rides/{id}",
       config: {
         description: "Update a ride",
         validate: {
@@ -259,15 +273,17 @@ async function init() {
             };
           }
 
-          const newRide = await Ride.query().update({
-            date: request.payload.date,
-            time: request.payload.time,
-            distance: request.payload.distance,
-            fuel_price: request.payload.fuel_price,
-            fee: request.payload.fee,
-            vehicle_id: request.payload.vehicle_id,
-            from_location_id: request.payload.from_location_id,
-            to_location_id: request.payload.to_location_id
+          const newRide = await Ride.query()
+            .where("id", request.params.id)
+            .update({
+              date: request.payload.date,
+              time: request.payload.time,
+              distance: request.payload.distance,
+              fuel_price: request.payload.fuel_price,
+              fee: request.payload.fee,
+              vehicle_id: request.payload.vehicle_id,
+              from_location_id: request.payload.from_location_id,
+              to_location_id: request.payload.to_location_id
           });
 
           if (newRide) {
@@ -370,7 +386,7 @@ async function init() {
     },
     {
       method: "PUT",
-      path: "/location/{id}",
+      path: "/locations/{id}",
       config: {
         description: "Update a location",
         validate: {
@@ -378,7 +394,7 @@ async function init() {
             name: Joi.string().required(),
             address: Joi.string().required(),
             city: Joi.string().required(),
-            state: Joi.number().integer().required(),
+            state: Joi.string().required(),
             zip_code: Joi.number().integer().required()
           })
         },
@@ -394,12 +410,27 @@ async function init() {
             };
           }
 
-          const newLocation = await Location.query().update({
-            name: request.payload.name,
-            address: request.payload.address,
-            city: request.payload.city,
-            state: request.payload.state,
-            zip_code: request.payload.zip_code
+          const samePlace = await Location.query()
+            .where("name", request.payload.name)
+            .andWhere("address", request.payload.address)
+            .andWhere("id","!=", request.params.id)
+            .first()
+
+          if (samePlace) {
+            return {
+              ok: false,
+              msge: `Location named '${request.payload.name}' at '${request.payload.address}' already exists`
+            }
+          }
+
+          const newLocation = await Location.query()
+            .where("id", request.params.id)
+            .update({
+              name: request.payload.name,
+              address: request.payload.address,
+              city: request.payload.city,
+              state: request.payload.state,
+              zip_code: request.payload.zip_code
           });
 
           if (newLocation) {
@@ -497,7 +528,7 @@ async function init() {
     },
     {
       method: "PUT",
-      path: "/passenger/{id}",
+      path: "/passengers/{id}",
       config: {
         description: "Update a passenger",
         validate: {
@@ -519,10 +550,24 @@ async function init() {
             };
           }
 
-          const newLocation = await Location.query().update({
-            first_name: request.payload.first_name,
-            last_name: request.payload.last_name,
-            phone: request.payload.phone
+          const samePhone = await Passenger.query()
+            .where("phone", request.payload.phone)
+            .andWhere("id","!=", request.params.id)
+            .first()
+
+          if (samePhone) {
+            return {
+              ok: false,
+              msge: `Passenger with phone number '${request.payload.phone}' already exists`
+            }
+          }
+
+          const newPassenger = await Passenger.query()
+            .where("id", request.params.id)
+            .update({
+              first_name: request.payload.first_name,
+              last_name: request.payload.last_name,
+              phone: request.payload.phone
           });
 
           if (newPassenger) {
@@ -689,8 +734,22 @@ async function init() {
             };
           }
 
-          const newVehicleType = await VehicleType.query().update({
-            type: request.payload.type
+          const sameType = await VehicleType.query()
+            .where("type", request.payload.type)
+            .andWhere("id","!=", request.params.id)
+            .first()
+
+          if (sameType) {
+            return {
+              ok: false,
+              msge: `Vehicle Type '${request.payload.type}' already exists`
+            }
+          }
+
+          const newVehicleType = await VehicleType.query()
+            .where("id", request.params.id)
+            .update({
+              type: request.payload.type
           });
 
           if (newVehicleType) {
@@ -826,15 +885,30 @@ async function init() {
             };
           }
 
-          const newVehicle = await Vehicle.query().update({
-            make: request.payload.make,
-            model: request.payload.model,
-            color: request.payload.color,
-            vehicle_type_id: request.payload.vehicle_type_id,
-            capacity: request.payload.capacity,
-            mpg: request.payload.mpg,
-            license_state: request.payload.license_state,
-            license_number: request.payload.license_number
+          const samePlate = await Vehicle.query()
+            .where("license_number", request.payload.license_number)
+            .andWhere("license_state", request.payload.license_state)
+            .andWhere("id","!=", request.params.id)
+            .first()
+
+          if (samePlate) {
+            return {
+              ok: false,
+              msge: `Vehicle with plate '${request.payload.license_number}' from '${request.payload.license_state}' already exists`
+            }
+          }
+
+          const newVehicle = await Vehicle.query()
+            .where("id", request.params.id)
+            .update({
+              make: request.payload.make,
+              model: request.payload.model,
+              color: request.payload.color,
+              vehicle_type_id: request.payload.vehicle_type_id,
+              capacity: request.payload.capacity,
+              mpg: request.payload.mpg,
+              license_state: request.payload.license_state,
+              license_number: request.payload.license_number
           });
 
           if (newVehicle) {
