@@ -8,7 +8,7 @@ class Passengers extends Model {
     }
     static get relationMappings() {
         return {
-            passengers: {
+            passenger: {
                 relation: Model.BelongsToOneRelation,
                 modelClass: Passenger,
                 join: {
