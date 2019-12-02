@@ -194,14 +194,14 @@ async function init() {
         description: "Add a new Ride",
         validate: {
           payload: Joi.object({
-            date: Joi.string().date().required(),
-            time: Joi.string().time().required(),
+            date: Joi.string().required(),
+            time: Joi.string().required(),
             distance: Joi.number(),
             fuel_price: Joi.number(),
             fee: Joi.number(),
             vehicle_id: Joi.number().integer(),
-            from_location_id: Joi.string().integer().required(),
-            to_location_id: Joi.string().integer().required()
+            from_location_id: Joi.number().integer().required(),
+            to_location_id: Joi.number().integer().required()
           })
         },
         handler: async (request, h) => {
@@ -237,14 +237,14 @@ async function init() {
         description: "Update a ride",
         validate: {
           payload: Joi.object({
-            date: Joi.string().date().required(),
-            time: Joi.string().time().required(),
+            date: Joi.string().required(),
+            time: Joi.string().required(),
             distance: Joi.number(),
             fuel_price: Joi.number(),
             fee: Joi.number(),
             vehicle_id: Joi.number().integer(),
-            from_location_id: Joi.string().integer().required(),
-            to_location_id: Joi.string().integer().required()
+            from_location_id: Joi.number().integer().required(),
+            to_location_id: Joi.number().integer().required()
           })
         },
         handler: async (request, h) => {
@@ -329,7 +329,7 @@ async function init() {
             name: Joi.string().required(),
             address: Joi.string().required(),
             city: Joi.string().required(),
-            state: Joi.number().integer().required(),
+            state: Joi.string().required(),
             zip_code: Joi.number().integer().required()
           })
         },
