@@ -21,7 +21,8 @@
       >
         <template v-slot:item.action="{ item }">
           <td>
-            <v-icon small class="ml-2" @click="updateVehicle(item)">
+            <v-icon small class="ml-2" 
+               @click="updateVehicle(item)">
               mdi-pencil
             </v-icon>
           </td>
@@ -38,7 +39,6 @@
         <VehiclesForm
           v-bind:editMode="vehicleDialog.editMode"
           v-bind:initialData="vehicleDialog.vehicle"
-          v-bind:vehicle="vehicle"
           v-on:cancel="cancelVehicle"
           v-on:save="saveVehicle"
         />
@@ -62,13 +62,6 @@ export default {
   
   components: {
     VehiclesForm
-  },
-  
-  props: {
-    vehicle: {
-      type: Object,
-      required: true
-    }
   },
   
   data: function() {
@@ -104,7 +97,10 @@ export default {
         model: vehicle.model,
         color: vehicle.color,
         state: vehicle.license_state,
-        licenseNumber: vehicle.license_number
+        licenseNumber: vehicle.license_number,
+        vehicle_type_id: vehicle.vehicle_type_id,
+        capacity: vehicle.capacity,
+        mpg: vehicle.mpg
       }));
     });
   },
@@ -144,7 +140,10 @@ export default {
           model: vehicle.model,
           color: vehicle.color,
           state: vehicle.license_state,
-          licenseNumber: vehicle.license_number
+          licenseNumber: vehicle.license_number,
+          vehicle_type_id: vehicle.vehicle_type_id,
+          capacity: vehicle.capacity,
+          mpg: vehicle.mpg
         }));
       });      
       this.vehicleDialog.show = false;

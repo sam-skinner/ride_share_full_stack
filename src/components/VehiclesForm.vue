@@ -83,20 +83,16 @@
     <v-card-actions>
       <v-btn 
         color="secondary" 
-        :disabled="saving" 
         v-on:click="cancel"
       >Cancel</v-btn>
       <v-spacer></v-spacer>
       <v-btn 
         color="primary" 
-        :disabled="saving" 
         v-on:click="handleClear"
       >Clear</v-btn>
       <v-btn
         color="primary"
         raised
-        :disabled="saving"
-        :loading="saving"
         v-on:click="handleSave"
       >Save</v-btn>
     </v-card-actions>
@@ -130,7 +126,7 @@ export default {
   data: function() {
     return {
       valid: false,
-
+      
       newVehicle: {
         make: "",
         model: "",
@@ -143,7 +139,7 @@ export default {
       },
       typesList: [],
       statesList: [],
-
+      
       vehicleCreated: false,
 
       dialogHeader: "<no dialogHeader>",
@@ -155,8 +151,24 @@ export default {
       }
     };
   },
+  watch: {
+    initialData(vehicleProp) {
+      this.newVehicle = vehicleProp;
+      this.newVehicle.license_number = vehicleProp.licenseNumber;
+      this.newVehicle.license_state = vehicleProp.state;
+    }
+  },
+  props: {
+    editMode: {
+      type: Boolean,
+      required: true
+    },
+    initialData: {
+      type: Object,
+      required: true
+    }
+  },
   beforeMount: function() {
-    console.log("hi");
     this.$axios.get("/vehicle-types").then(response => {
       response.data.map(t => this.typesList.push(t));
     });
@@ -178,30 +190,59 @@ export default {
       this.newVehicle.license_state = "";
     },
     handleSave: function() {
-      this.vehicleCreated = false;
-      this.$axios
-        .post("/vehicles", {
-          make: this.newVehicle.make,
-          model: this.newVehicle.model,
-          color: this.newVehicle.color,
-          vehicle_type_id: this.newVehicle.vehicle_type_id,
-          capacity: this.newVehicle.capacity,
-          mpg: this.newVehicle.mpg,
-          license_state: this.newVehicle.license_state,
-          license_number: this.newVehicle.license_number
-        })
-        .then(result => {
-          if (result.status == 200) {
-            if (result.data.ok) {
-              this.$emit("save");
-              // this.showDialog("Success", result.data.msge);
-              this.vehicleCreated = true;
-            } else {
-              this.showDialog("Failed", result.data.msge);
+      if (this.editMode) {
+        this.vehicleCreated = false;
+        const vehicleId = this.newVehicle.id;
+        delete this.newVehicle.id;
+
+        this.$axios
+          .put(`/vehicles/${vehicleId}`,{
+            make: this.newVehicle.make,
+            model: this.newVehicle.model,
+            color: this.newVehicle.color,
+            vehicle_type_id: this.newVehicle.vehicle_type_id,
+            capacity: this.newVehicle.capacity,
+            mpg: this.newVehicle.mpg,
+            license_state: this.newVehicle.license_state,
+            license_number: this.newVehicle.license_number
+          })
+          .then(result => {
+            if (result.status == 200) {
+              if (result.data.ok) {
+                this.$emit("save");
+                this.vehicleCreated = true;
+              } else {
+                this.showDialog("Failed", result.data.msge);
+              }
             }
-          }
-        })
-        .catch(err => this.showDialog("Failed", err));
+          })
+          .catch(err => this.showDialog("Failed", err));
+      } else {
+        this.vehicleCreated = false;
+        this.$axios
+          .post("/vehicles", {
+            make: this.newVehicle.make,
+            model: this.newVehicle.model,
+            color: this.newVehicle.color,
+            vehicle_type_id: this.newVehicle.vehicle_type_id,
+            capacity: this.newVehicle.capacity,
+            mpg: this.newVehicle.mpg,
+            license_state: this.newVehicle.license_state,
+            license_number: this.newVehicle.license_number
+          })
+          .then(result => {
+            if (result.status == 200) {
+              if (result.data.ok) {
+                this.$emit("save");
+                // this.showDialog("Success", result.data.msge);
+                this.vehicleCreated = true;
+              } else {
+                this.showDialog("Failed", result.data.msge);
+              }
+            }
+          })
+          .catch(err => this.showDialog("Failed", err));
+      }
     },
     cancel: function() {
       this.handleClear();
