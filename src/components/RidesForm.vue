@@ -4,58 +4,60 @@
       <span class="headline">Add Ride</span>
     </v-card-title>
     <v-card-text>
-      <form></form>
+      <form>
+        <v-row align="center">
+          <v-col col="12" sm="6">
+            <v-date-picker
+              v-model="newRide.date"
+              v-bind:rules="rules.required"
+              width="200"
+            ></v-date-picker>
+          </v-col>
+          <v-col col="12" sm="6">
+            <v-time-picker
+              v-model="newRide.time"
+              v-bind:rules="rules.required"
+              width="200"
+            ></v-time-picker>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col col="12" sm="6">
+            <v-select 
+              label="From Location" 
+              v-model="newRide.from_location_id"
+              v-bind:rules="rules.required"
+              :items="locationList"
+              item-text="name"
+              item-value="id"
+            ></v-select>
+          </v-col>
+          <v-col col="12" sm="6">
+            <v-select 
+              label="To Location" 
+              v-model="newRide.to_location_id"
+              v-bind:rules="rules.required"
+              :items="locationList"
+              item-text="name"
+              item-value="id"
+            ></v-select>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col col="12" sm="12">
+            <v-select 
+              label="Vehicle" 
+              v-model="newRide.vehicle_id"
+              :items="vehicleList"
+              item-text="license_number"
+              item-value="id"
+            ></v-select>
+          </v-col>
+        </v-row>
+      </form>
     </v-card-text>
-
-    <v-row align="center">
-      <v-col col="12" sm="6">
-        <v-date-picker
-          v-model="newRide.date"
-          v-bind:rules="rules.required"
-        ></v-date-picker>
-      </v-col>
-      <v-col col="12" sm="6">
-        <v-time-picker
-          v-model="newRide.time"
-          v-bind:rules="rules.required"
-        ></v-time-picker>
-      </v-col>
-    </v-row>
-
-    <v-row align="center">
-      <v-col col="12" sm="6">
-        <v-select 
-          label="From Location" 
-          v-model="newRide.from_location_id"
-          v-bind:rules="rules.required"
-          :items="locationList"
-          item-text="name"
-          item-value="id"
-        ></v-select>
-      </v-col>
-      <v-col col="12" sm="6">
-        <v-select 
-          label="To Location" 
-          v-model="newRide.to_location_id"
-          v-bind:rules="rules.required"
-          :items="locationList"
-          item-text="name"
-          item-value="id"
-        ></v-select>
-      </v-col>
-    </v-row>
-
-    <v-row align="center">
-      <v-col col="12" sm="12">
-        <v-select 
-          label="Vehicle" 
-          v-model="newRide.vehicle_id"
-          :items="vehicleList"
-          item-text="license_number"
-          item-value="id"
-        ></v-select>
-      </v-col>
-    </v-row>
 
     <v-card-actions>
       <v-btn 

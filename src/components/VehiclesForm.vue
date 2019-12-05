@@ -4,100 +4,100 @@
       <span class="headline">{{ title }}</span>
     </v-card-title>
     <v-card-text>
-      <form></form>
+      <form>
+        <v-row align="center">
+          <v-col col="12" sm="6">
+            <v-text-field
+              v-model="newVehicle.make"
+              v-bind:rules="rules.required"
+              label="Make"
+            ></v-text-field>
+          </v-col>
+          <v-col col="12" sm="v6">
+            <v-text-field
+              v-model="newVehicle.model"
+              v-bind:rules="rules.required"
+              label="Model"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col col="12" sm="6">
+            <v-text-field
+              v-model="newVehicle.color"
+              v-bind:rules="rules.required"
+              label="Color"
+            ></v-text-field>
+          </v-col>
+          <v-col col="12" sm="6">
+            <v-combobox
+              label="Vehicle Type" 
+              v-model="newVehicle.vehicle_type_id"
+              v-bind:rules="rules.required"
+              :items="typesList"
+              item-text="type"
+              item-value="id"
+              hide-selected
+              :search-input.sync="search"
+            >
+              <template v-slot:no-data>
+                <v-list-item @click="addNewVehicleType(search)">
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      Create "<strong>{{ search }}</strong>"?
+                    </v-list-item-title>
+                  </v-list-item-content>            
+                </v-list-item>
+              </template>
+              <template v-slot:selection="{ attrs, item, parent, selected }">
+                <span 
+                  v-bind="attrs"
+                  :input-value="selected">
+                  {{ item.type }}
+                </span>
+              </template>
+            </v-combobox>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col col="12" sm="6">
+            <v-text-field
+              v-model="newVehicle.capacity"
+              v-bind:rules="rules.required"
+              label="Capacity"
+            ></v-text-field>
+          </v-col>
+          <v-col col="12" sm="6">
+            <v-text-field
+              v-model="newVehicle.mpg"
+              v-bind:rules="rules.required"
+              label="MPG"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col col="12" sm="6">
+            <v-select 
+              label="License State" 
+              v-model="newVehicle.license_state"
+              v-bind:rules="rules.required"
+              :items="statesList"
+              item-text="name"
+            ></v-select>
+          </v-col>
+          <v-col col="12" sm="6">
+            <v-text-field
+              v-model="newVehicle.license_number"
+              v-bind:rules="rules.required"
+              label="License Number"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </form>
     </v-card-text>
-
-    <v-row align="center">
-      <v-col col="12" sm="6">
-        <v-text-field
-          v-model="newVehicle.make"
-          v-bind:rules="rules.required"
-          label="Make"
-        ></v-text-field>
-      </v-col>
-      <v-col col="12" sm="v6">
-        <v-text-field
-          v-model="newVehicle.model"
-          v-bind:rules="rules.required"
-          label="Model"
-        ></v-text-field>
-      </v-col>
-    </v-row>
-
-    <v-row align="center">
-      <v-col col="12" sm="6">
-        <v-text-field
-          v-model="newVehicle.color"
-          v-bind:rules="rules.required"
-          label="Color"
-        ></v-text-field>
-      </v-col>
-      <v-col col="12" sm="6">
-        <v-combobox
-          label="Vehicle Type" 
-          v-model="newVehicle.vehicle_type_id"
-          v-bind:rules="rules.required"
-          :items="typesList"
-          item-text="type"
-          item-value="id"
-          hide-selected
-          :search-input.sync="search"
-        >
-          <template v-slot:no-data>
-            <v-list-item @click="addNewVehicleType(search)">
-              <v-list-item-content>
-                <v-list-item-title>
-                  Create "<strong>{{ search }}</strong>"?
-                </v-list-item-title>
-              </v-list-item-content>            
-            </v-list-item>
-          </template>
-          <template v-slot:selection="{ attrs, item, parent, selected }">
-            <span 
-              v-bind="attrs"
-              :input-value="selected">
-              {{ item.type }}
-            </span>
-          </template>
-        </v-combobox>
-      </v-col>
-    </v-row>
-
-    <v-row align="center">
-      <v-col col="12" sm="6">
-        <v-text-field
-          v-model="newVehicle.capacity"
-          v-bind:rules="rules.required"
-          label="Capacity"
-        ></v-text-field>
-      </v-col>
-      <v-col col="12" sm="6">
-        <v-text-field
-          v-model="newVehicle.mpg"
-          v-bind:rules="rules.required"
-          label="MPG"
-        ></v-text-field>
-      </v-col>
-    </v-row>
-
-    <v-row align="center">
-      <v-col col="12" sm="6">
-        <v-select 
-          label="License State" 
-          v-model="newVehicle.license_state"
-          v-bind:rules="rules.required"
-          :items="statesList"
-          item-text="name"
-        ></v-select>
-      </v-col>
-      <v-col col="12" sm="6">
-        <v-text-field
-          v-model="newVehicle.license_number"
-          v-bind:rules="rules.required"
-          label="License Number"
-        ></v-text-field>
-      </v-col>
-    </v-row>
 
     <v-card-actions>
       <v-btn 
