@@ -137,7 +137,16 @@ export default {
     },
     
     saveVehicle(vehicle) {
-      this.vehicles.push(vehicle);
+      this.$axios.get("/vehicles").then(response => {
+        this.vehicles = response.data.map(vehicle => ({
+          id: vehicle.id,
+          make: vehicle.make,
+          model: vehicle.model,
+          color: vehicle.color,
+          state: vehicle.license_state,
+          licenseNumber: vehicle.license_number
+        }));
+      });      
       this.vehicleDialog.show = false;
     }
   }
