@@ -20,9 +20,11 @@
         v-bind:items="vehicles"
       >
         <template v-slot:item.action="{ item }">
-          <v-icon small class="ml-2" @click="updateVehicle(item)">
-            mdi-pencil
-          </v-icon>
+          <td>
+            <v-icon small class="ml-2" @click="updateVehicle(item)">
+              mdi-pencil
+            </v-icon>
+          </td>
         </template>
       </v-data-table>
       
@@ -36,7 +38,7 @@
         <VehiclesForm
           v-bind:editMode="vehicleDialog.editMode"
           v-bind:initialData="vehicleDialog.vehicle"
-          v-bind:course="vehicle"
+          v-bind:vehicle="vehicle"
           v-on:cancel="cancelVehicle"
           v-on:save="saveVehicle"
         />
@@ -76,8 +78,8 @@ export default {
         { text: "Model", value: "model" },
         { text: "Color", value: "color" },
         { text: "State", value: "state" },
-        { text: "License Number", value: "licenseNumber" }
-
+        { text: "License Number", value: "licenseNumber" },
+        { text: "Action", value: "action" }
       ],
       vehicles: [],
       
@@ -128,37 +130,16 @@ export default {
     // Add a vehicle
     addVehicle() {
       this.activateVehicleDialog();
-      // this.$axios.post("/vehicles", {
-      //   make: "Ford",
-      //   model: "F150",
-      //   color: "Red",
-      //   vehicle_type_id: 2,
-      //   capacity: 4,
-      //   mpg: 30,
-      //   license_state: "WA",
-      //   license_number: "10"
-      // })
-      // .then(result => {
-      //     if (result.status === 200) {
-      //       if (result.data.ok) {
-      //         this.showSnackbar("Success");
-      //       } else {
-      //         this.showSnackbar(result.data.msge);
-      //       }
-      //     }
-      //   })
-      //   .catch(err => this.showSnackbar(err));
     },
     
     cancelVehicle() {
       this.vehicleDialog.show = false;
-    }
+    },
     
-    // saveVehicle(vehicle) {
-    //   if (vehicle instanceof Error) {
-    // 
-    //   }
-    // }
+    saveVehicle(vehicle) {
+      this.vehicles.push(vehicle);
+      this.vehicleDialog.show = false;
+    }
   }
 };
 </script>

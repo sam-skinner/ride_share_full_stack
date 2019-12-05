@@ -39,6 +39,7 @@
           v-bind:rules="rules.required"
           :items="typesList"
           item-text="type"
+          item-value="id"
         ></v-select>
       </v-col>
     </v-row>
@@ -192,7 +193,8 @@ export default {
         .then(result => {
           if (result.status == 200) {
             if (result.data.ok) {
-              this.showDialog("Success", result.data.msge);
+              this.$emit("save");
+              // this.showDialog("Success", result.data.msge);
               this.vehicleCreated = true;
             } else {
               this.showDialog("Failed", result.data.msge);
@@ -200,6 +202,10 @@ export default {
           }
         })
         .catch(err => this.showDialog("Failed", err));
+    },
+    cancel: function() {
+      this.handleClear();
+      this.$emit("cancel");
     },
     showDialog: function(header, text) {
       this.dialogHeader = header;
