@@ -10,8 +10,16 @@
            label="Available Rides" 
            v-model="ride_id"
            :items="rides"
-           item-text="id"
-         ></v-select>
+           item-text="to_location_name"
+           item-value="id"
+         >
+          <template slot='selection' slot-scope='{ item }'>
+            {{ item.time }} {{ item.from_location_name }} to {{ item.to_location_name }}
+          </template>
+          <template slot='item' slot-scope='{ item }'>
+            {{ item.time }} {{ item.from_location_name }} to {{ item.to_location_name }}
+          </template>
+         </v-select>
         </v-row>
       </form>
     </v-card-text>
@@ -104,7 +112,7 @@ export default {
               this.$axios.get("/rides").then(response => {
                 this.rides = response.data.map(ride => ({
                   id: ride.id,
-                  date: this.getDateFromTimestamp(ride.date),
+                  date: ride.date,
                   time: ride.time.substring(0, 5),
                   distance: ride.distance,
                   fuel_price: ride.fuel_price,
@@ -114,9 +122,6 @@ export default {
                   to_location_id: ride.to_location_id,
                   to_location_name: this.findLocationById(ride.to_location_id, this.locationList).name,
                   from_location_name: this.findLocationById(ride.from_location_id, this.locationList).name,
-                  drivers: this.findDriverInDrivers(this.findDriverWithRideId(ride.id, drivers), allDrivers),
-                  passengers: this.findDriverInDrivers(this.findDriverWithRideId(ride.id, passengers), allPassengers),
-                  passenger_id: this.findDriverWithRideId(ride.id, passengers)
                 }));
               });
             });
@@ -130,7 +135,6 @@ export default {
     
     handleSave: function() {
       this.passengerCreated = false;
-      console.log(this.passenger);
       this.$axios
         .post("/passengers-rides", {
           passenger_id: this.passenger.id,
@@ -160,40 +164,6 @@ export default {
              return myArray[i];
          }
      }
-    },
-    
-    findDriverWithRideId(id, myArray){
-     for (var i=0; i < myArray.length; i++) {
-         if (myArray[i].ride_id === id) {
-             return myArray[i].id;
-         }
-     }
-    },
-    
-    findDriverInDrivers(id, myArray) {
-      for (var i=0; i < myArray.length; i++) {
-          if (myArray[i].id === id) {
-              return myArray[i].first_name + " " + myArray[i].last_name;
-          }
-      }
-    },
-    
-    getDateFromTimestamp(ts) {
-      let date = new Date(ts);
-      if (date.getTime() < 86400000) {
-        //ms in a day
-        return "";
-      }
-      let yr = date.toLocaleDateString(this.currentLanguageCode, {
-        year: "numeric"
-      });
-      let mo = date.toLocaleDateString(this.currentLanguageCode, {
-        month: "2-digit"
-      });
-      let da = date.toLocaleDateString(this.currentLanguageCode, {
-        day: "2-digit"
-      });
-      return `${mo}-${da}-${yr}`;
     },
     
     showDialog: function(header, text) {
