@@ -229,7 +229,7 @@ export default {
          day: "2-digit"
        });
        return `${mo}-${da}-${yr}`;
-     },
+     }
   }
 };
 </script>
