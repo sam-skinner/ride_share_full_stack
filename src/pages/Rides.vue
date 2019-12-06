@@ -89,7 +89,6 @@ export default {
       }
     }
   },
-  
   mounted: function() {
     this.$axios.get("/rides").then(response => {
       this.rides = response.data.map(ride => ({
@@ -135,7 +134,7 @@ export default {
     
     saveRide(ride) {
       this.$axios.get("/rides").then(response => {
-        this.ride = response.data.map(ride => ({
+        this.rides = response.data.map(ride => ({
           id: ride.id,
           date: ride.date,
           time: ride.time,

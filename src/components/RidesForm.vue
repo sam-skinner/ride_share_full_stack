@@ -123,7 +123,7 @@ export default {
       dialogVisible: false,
 
       rules: {
-        required: [val => val.length > 0 || "Required"]
+        required: [val => val.length >= 0 || "Required"]
       }
     };
   },
@@ -199,7 +199,6 @@ export default {
             if (result.status == 200) {
               if (result.data.ok) {
                 this.$emit("save");
-                // this.showDialog("Success", result.data.msge);
                 this.rideCreated = true;
               } else {
                 this.showDialog("Failed", result.data.msge);
