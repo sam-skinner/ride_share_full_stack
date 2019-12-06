@@ -1,21 +1,21 @@
 <template>
   <v-card>
     <v-card-title>
-      <span class="headline">Create New Account</span>
+      <span class="headline">Create New Driver Account</span>
     </v-card-title>
     <v-card-text>
       <form>
         <v-row align="center">
           <v-col col="12" sm="6">
             <v-text-field
-              v-model="newPassenger.first_name"
+              v-model="newDriver.first_name"
               v-bind:rules="rules.required"
               label="First Name"
             ></v-text-field>
           </v-col>
           <v-col col="12" sm="v6">
             <v-text-field
-              v-model="newPassenger.last_name"
+              v-model="newDriver.last_name"
               v-bind:rules="rules.required"
               label="Last Name"
             ></v-text-field>
@@ -25,9 +25,16 @@
         <v-row align="center">
           <v-col col="12" sm="6">
             <v-text-field
-              v-model="newPassenger.phone"
+              v-model="newDriver.phone"
               v-bind:rules="rules.required"
               label="Phone Number"
+            ></v-text-field>
+          </v-col>     
+          <v-col col="12" sm="6">
+            <v-text-field
+              v-model="newDriver.license_number"
+              v-bind:rules="rules.required"
+              label="License Number"
             ></v-text-field>
           </v-col>          
         </v-row>
@@ -76,18 +83,19 @@
 
 <script>
 export default {
-  name: "PassengerCreation",
+  name: "DriverCreation",
   data: function() {
     return {
       valid: false,
       
-      newPassenger: {
+      newDriver: {
         first_name: "",
         last_name: "",
-        phone: ""
+        phone: "",
+        license_number: ""
       },
 
-      passengerCreated: false,
+      driverCreated: false,
 
       dialogHeader: "<no dialogHeader>",
       dialogText: "<no dialogText>",
@@ -100,16 +108,16 @@ export default {
   },
   
   watch: {
-    initialData(passengerProp) {
+    initialData(driverProp) {
       var first = true;
-      for (var i = 0; i < Object.keys(passengerProp).length; i++) {
-        if (passengerProp[i] == " ") {
+      for (var i = 0; i < Object.keys(driverProp).length; i++) {
+        if (driverProp[i] == " ") {
           first = false;
           continue;
         } else if (first) {
-          this.newPassenger.first_name += passengerProp[i]; 
+          this.newDriver.first_name += driverProp[i]; 
         } else if (!first) {
-          this.newPassenger.last_name += passengerProp[i]; 
+          this.newDriver.last_name += driverProp[i]; 
         }
       }
     }
@@ -125,24 +133,26 @@ export default {
   methods: {
     
     handleClear: function() {
-      this.newPassenger.first_name = "";
-      this.newPassenger.last_name = "";
-      this.newPassenger.phone = "";
+      this.newDriver.first_name = "";
+      this.newDriver.last_name = "";
+      this.newDriver.phone = "";
+      this.newDriver.license_number = "";
     },
     
     handleSave: function() {
-      this.passengerCreated = false;
+      this.driverCreated = false;
       this.$axios
-        .post("/passengers", {
-          first_name: this.newPassenger.first_name,
-          last_name: this.newPassenger.last_name,
-          phone: this.newPassenger.phone
+        .post("/drivers", {
+          first_name: this.newDriver.first_name,
+          last_name: this.newDriver.last_name,
+          phone: this.newDriver.phone,
+          license_number: this.newDriver.license_number
         })
         .then(result => {
           if (result.status == 200) {
             if (result.data.ok) {
               this.$emit("save");
-              this.passengerCreated = true;
+              this.driverCreated = true;
             } else {
               this.showDialog("Failed", result.data.msge);
             }
@@ -161,8 +171,8 @@ export default {
     },
     hideDialog: function() {
       this.dialogVisible = false;
-      if (this.passengerCreated) {
-        this.$router.push({ name: "passenger" });
+      if (this.driverCreated) {
+        this.$router.push({ name: "driver" });
       }
     }
   }
