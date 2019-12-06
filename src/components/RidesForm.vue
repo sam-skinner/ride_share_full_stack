@@ -4,58 +4,60 @@
       <span class="headline">Add Ride</span>
     </v-card-title>
     <v-card-text>
-      <form></form>
+      <form>
+        <v-row align="center">
+          <v-col col="12" sm="6">
+            <v-date-picker
+              v-model="newRide.date"
+              v-bind:rules="rules.required"
+              width="200"
+            ></v-date-picker>
+          </v-col>
+          <v-col col="12" sm="6">
+            <v-time-picker
+              v-model="newRide.time"
+              v-bind:rules="rules.required"
+              width="200"
+            ></v-time-picker>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col col="12" sm="6">
+            <v-select 
+              label="From Location" 
+              v-model="newRide.from_location_id"
+              v-bind:rules="rules.required"
+              :items="locationList"
+              item-text="name"
+              item-value="id"
+            ></v-select>
+          </v-col>
+          <v-col col="12" sm="6">
+            <v-select 
+              label="To Location" 
+              v-model="newRide.to_location_id"
+              v-bind:rules="rules.required"
+              :items="locationList"
+              item-text="name"
+              item-value="id"
+            ></v-select>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col col="12" sm="12">
+            <v-select 
+              label="Vehicle" 
+              v-model="newRide.vehicle_id"
+              :items="vehicleList"
+              item-text="license_number"
+              item-value="id"
+            ></v-select>
+          </v-col>
+        </v-row>
+      </form>
     </v-card-text>
-
-    <v-row align="center">
-      <v-col col="12" sm="6">
-        <v-date-picker
-          v-model="newRide.date"
-          v-bind:rules="rules.required"
-        ></v-date-picker>
-      </v-col>
-      <v-col col="12" sm="6">
-        <v-time-picker
-          v-model="newRide.time"
-          v-bind:rules="rules.required"
-        ></v-time-picker>
-      </v-col>
-    </v-row>
-
-    <v-row align="center">
-      <v-col col="12" sm="6">
-        <v-select 
-          label="From Location" 
-          v-model="newRide.from_location_id"
-          v-bind:rules="rules.required"
-          :items="locationList"
-          item-text="name"
-          item-value="id"
-        ></v-select>
-      </v-col>
-      <v-col col="12" sm="6">
-        <v-select 
-          label="To Location" 
-          v-model="newRide.to_location_id"
-          v-bind:rules="rules.required"
-          :items="locationList"
-          item-text="name"
-          item-value="id"
-        ></v-select>
-      </v-col>
-    </v-row>
-
-    <v-row align="center">
-      <v-col col="12" sm="12">
-        <v-select 
-          label="Vehicle" 
-          v-model="newRide.vehicle_id"
-          :items="vehicleList"
-          item-text="license_number"
-          item-value="id"
-        ></v-select>
-      </v-col>
-    </v-row>
 
     <v-card-actions>
       <v-btn 
@@ -121,15 +123,15 @@ export default {
       dialogVisible: false,
 
       rules: {
-        required: [val => val.length > 0 || "Required"]
+        required: [val => val.length >= 0 || "Required"]
       }
     };
   },
   watch: {
     initialData(rideProp) {
       this.newRide = rideProp;
-      // this.newRide.license_number = rideProp.licenseNumber;
-      // this.newRide.license_state = rideProp.state;
+      this.newRide.date = this.getDateFromTimestamp(rideProp.date);
+      this.newRide.time = this.getTimeFromTimestamp(rideProp.time);
     }
   },
   props: {
@@ -197,7 +199,6 @@ export default {
             if (result.status == 200) {
               if (result.data.ok) {
                 this.$emit("save");
-                // this.showDialog("Success", result.data.msge);
                 this.rideCreated = true;
               } else {
                 this.showDialog("Failed", result.data.msge);
@@ -221,6 +222,28 @@ export default {
       if (this.rideCreated) {
         this.$router.push({ name: "rides" });
       }
+    },
+
+    getDateFromTimestamp(ts) {
+      let date = new Date(ts);
+      if (date.getTime() < 86400000) {
+        //ms in a day
+        return "";
+      }
+      let yr = date.toLocaleDateString(this.currentLanguageCode, {
+        year: "numeric"
+      });
+      let mo = date.toLocaleDateString(this.currentLanguageCode, {
+        month: "2-digit"
+      });
+      let da = date.toLocaleDateString(this.currentLanguageCode, {
+        day: "2-digit"
+      });
+      return `${yr}-${mo}-${da}`;
+    },
+
+    getTimeFromTimestamp(ts) {
+      return String(ts.substring(0, 5));
     }
   }
 };

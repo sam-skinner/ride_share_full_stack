@@ -19,10 +19,10 @@
         v-bind:headers="headers"
         v-bind:items="vehicles"
       >
-        <template v-slot:item.action="{ item }">
+        <template slot="item.action" slot-scope="props">
           <td>
-            <v-icon small class="ml-2" 
-               @click="updateVehicle(item)">
+            <v-icon small 
+               @click="updateVehicle(props.item)">
               mdi-pencil
             </v-icon>
           </td>
@@ -39,6 +39,7 @@
         <VehiclesForm
           v-bind:editMode="vehicleDialog.editMode"
           v-bind:initialData="vehicleDialog.vehicle"
+          v-bind:vehicle="vehicle"
           v-on:cancel="cancelVehicle"
           v-on:save="saveVehicle"
         />
@@ -75,6 +76,7 @@ export default {
         { text: "Action", value: "action" }
       ],
       vehicles: [],
+      vehicle: {},
       
       vehicleDialog: {
         show: false,

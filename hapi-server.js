@@ -659,7 +659,8 @@ async function init() {
           if (newVehicleType) {
             return {
               ok: true,
-              msge: 'Added vehicle type'
+              msge: 'Added vehicle type',
+              id: newVehicleType.id
             };
           } else {
             return {

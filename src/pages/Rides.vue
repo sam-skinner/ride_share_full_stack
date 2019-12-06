@@ -67,16 +67,17 @@ export default {
   data: function() {
     return {
       headers: [
-        { text: "Date", value: "date" },
-        { text: "Time", value: "time" },
-        { text: "From", value: "from_location_id" },
-        { text: "To", value: "to_location_id" },
-        { text: "Distance", value: "distance" },
-        { text: "Fee", value: "fee" },
+        { text: "Date", value: "date", width: "13%" },
+        { text: "Time", value: "time", width: "13%" },
+        { text: "Driver", value: "driver", width: "16%" },
+        { text: "From", value: "from_location_name", width: "10%" },
+        { text: "To", value: "to_location_name", width: "12%" },
+        { text: "Passengers", value: "passengers"},
         { text: "Action", value: "action" }
       ],
       rides: [],
-      
+      locationList: [],
+
       rideDialog: {
         show: false,
         editMode: false,
@@ -91,22 +92,35 @@ export default {
   },
   
   mounted: function() {
-    this.$axios.get("/rides").then(response => {
-      this.rides = response.data.map(ride => ({
-        id: ride.id,
-        date: ride.date,
-        time: ride.time,
-        distance: ride.distance,
-        fuel_price: ride.fuel_price,
-        fee: ride.fee,
-        vehicle_id: ride.vehicle_id,
-        from_location_id: ride.from_location_id,
-        to_location_id: ride.to_location_id
-      }));
+    this.$axios.get("/locations").then(response => {
+      response.data.map(l => this.locationList.push(l));
+      
+      this.$axios.get("/rides").then(response => {
+        this.rides = response.data.map(ride => ({
+          id: ride.id,
+          date: this.getDateFromTimestamp(ride.date),
+          time: ride.time.substring(0, 5),
+          distance: ride.distance,
+          fuel_price: ride.fuel_price,
+          fee: ride.fee,
+          vehicle_id: ride.vehicle_id,
+          from_location_id: ride.from_location_id,
+          to_location_id: ride.to_location_id,
+          to_location_name: this.findLocationById(ride.to_location_id, this.locationList).name,
+          from_location_name: this.findLocationById(ride.from_location_id, this.locationList).name
+        }));
+      });
     });
   },
   
   methods: {
+    findLocationById(id, myArray){
+      for (var i=0; i < myArray.length; i++) {
+          if (myArray[i].id === id) {
+              return myArray[i];
+          }
+      }
+    },
     // Display a snackbar message.
     showSnackbar(text) {
       this.snackbar.text = text;
@@ -134,21 +148,45 @@ export default {
     },
     
     saveRide(ride) {
-      this.$axios.get("/rides").then(response => {
-        this.ride = response.data.map(ride => ({
-          id: ride.id,
-          date: ride.date,
-          time: ride.time,
-          distance: ride.distance,
-          fuel_price: ride.fuel_price,
-          fee: ride.fee,
-          vehicle_id: ride.vehicle_id,
-          from_location_id: ride.from_location_id,
-          to_location_id: ride.to_location_id
-        }));
-      });      
+      this.$axios.get("/locations").then(response => {
+        response.data.map(l => this.locationList.push(l));
+        
+        this.$axios.get("/rides").then(response => {
+          this.rides = response.data.map(ride => ({
+            id: ride.id,
+            date: this.getDateFromTimestamp(ride.date),
+            time: ride.time.substring(0, 5),
+            distance: ride.distance,
+            fuel_price: ride.fuel_price,
+            fee: ride.fee,
+            vehicle_id: ride.vehicle_id,
+            from_location_id: ride.from_location_id,
+            to_location_id: ride.to_location_id,
+            to_location_name: this.findLocationById(ride.to_location_id, this.locationList).name,
+            from_location_name: this.findLocationById(ride.from_location_id, this.locationList).name
+          }));
+        });
+      });
       this.rideDialog.show = false;
-    }
+    },
+    
+     getDateFromTimestamp(ts) {
+       let date = new Date(ts);
+       if (date.getTime() < 86400000) {
+         //ms in a day
+         return "";
+       }
+       let yr = date.toLocaleDateString(this.currentLanguageCode, {
+         year: "numeric"
+       });
+       let mo = date.toLocaleDateString(this.currentLanguageCode, {
+         month: "2-digit"
+       });
+       let da = date.toLocaleDateString(this.currentLanguageCode, {
+         day: "2-digit"
+       });
+       return `${mo}-${da}-${yr}`;
+     },
   }
 };
 </script>

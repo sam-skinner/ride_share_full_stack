@@ -1,84 +1,103 @@
 <template>
   <v-card>
     <v-card-title>
-      <span class="headline">Add Vehicle</span>
+      <span class="headline">{{ title }}</span>
     </v-card-title>
     <v-card-text>
-      <form></form>
+      <form>
+        <v-row align="center">
+          <v-col col="12" sm="6">
+            <v-text-field
+              v-model="newVehicle.make"
+              v-bind:rules="rules.required"
+              label="Make"
+            ></v-text-field>
+          </v-col>
+          <v-col col="12" sm="v6">
+            <v-text-field
+              v-model="newVehicle.model"
+              v-bind:rules="rules.required"
+              label="Model"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col col="12" sm="6">
+            <v-text-field
+              v-model="newVehicle.color"
+              v-bind:rules="rules.required"
+              label="Color"
+            ></v-text-field>
+          </v-col>
+          <v-col col="12" sm="6">
+            <v-combobox
+              label="Vehicle Type" 
+              v-model="newVehicle.vehicle_type_id"
+              v-bind:rules="rules.required"
+              :items="typesList"
+              item-text="type"
+              item-value="id"
+              hide-selected
+              :search-input.sync="search"
+            >
+              <template v-slot:no-data>
+                <v-list-item @click="addNewVehicleType(search)">
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      Create "<strong>{{ search }}</strong>"?
+                    </v-list-item-title>
+                  </v-list-item-content>            
+                </v-list-item>
+              </template>
+              <template v-slot:selection="{ attrs, item, parent, selected }">
+                <span 
+                  v-bind="attrs"
+                  :input-value="selected">
+                  {{ item.type }}
+                </span>
+              </template>
+            </v-combobox>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col col="12" sm="6">
+            <v-text-field
+              v-model="newVehicle.capacity"
+              v-bind:rules="rules.required"
+              label="Capacity"
+            ></v-text-field>
+          </v-col>
+          <v-col col="12" sm="6">
+            <v-text-field
+              v-model="newVehicle.mpg"
+              v-bind:rules="rules.required"
+              label="MPG"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col col="12" sm="6">
+            <v-select 
+              label="License State" 
+              v-model="newVehicle.license_state"
+              v-bind:rules="rules.required"
+              :items="statesList"
+              item-text="name"
+            ></v-select>
+          </v-col>
+          <v-col col="12" sm="6">
+            <v-text-field
+              v-model="newVehicle.license_number"
+              v-bind:rules="rules.required"
+              label="License Number"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </form>
     </v-card-text>
-
-    <v-row align="center">
-      <v-col col="12" sm="6">
-        <v-text-field
-          v-model="newVehicle.make"
-          v-bind:rules="rules.required"
-          label="Make"
-        ></v-text-field>
-      </v-col>
-      <v-col col="12" sm="6">
-        <v-text-field
-          v-model="newVehicle.model"
-          v-bind:rules="rules.required"
-          label="Model"
-        ></v-text-field>
-      </v-col>
-    </v-row>
-
-    <v-row align="center">
-      <v-col col="12" sm="6">
-        <v-text-field
-          v-model="newVehicle.color"
-          v-bind:rules="rules.required"
-          label="Color"
-        ></v-text-field>
-      </v-col>
-      <v-col col="12" sm="6">
-        <v-select 
-          label="Vehicle Type" 
-          v-model="newVehicle.vehicle_type_id"
-          v-bind:rules="rules.required"
-          :items="typesList"
-          item-text="type"
-          item-value="id"
-        ></v-select>
-      </v-col>
-    </v-row>
-
-    <v-row align="center">
-      <v-col col="12" sm="6">
-        <v-text-field
-          v-model="newVehicle.capacity"
-          v-bind:rules="rules.required"
-          label="Capacity"
-        ></v-text-field>
-      </v-col>
-      <v-col col="12" sm="6">
-        <v-text-field
-          v-model="newVehicle.mpg"
-          v-bind:rules="rules.required"
-          label="MPG"
-        ></v-text-field>
-      </v-col>
-    </v-row>
-
-    <v-row align="center">
-      <v-col col="12" sm="6">
-        <v-select 
-          label="License State" 
-          v-model="newVehicle.license_state"
-          v-bind:rules="rules.required"
-          :items="statesList"
-          item-text="name"
-        ></v-select>
-      </v-col>
-      <v-col col="12" sm="6">
-        <v-text-field
-          v-model="newVehicle.license_number"
-          v-bind:rules="rules.required"
-          label="License Number"
-        ></v-text-field>
-      </v-col>
-    </v-row>
 
     <v-card-actions>
       <v-btn 
@@ -140,6 +159,8 @@ export default {
       typesList: [],
       statesList: [],
       
+      search: null,
+
       vehicleCreated: false,
 
       dialogHeader: "<no dialogHeader>",
@@ -147,15 +168,29 @@ export default {
       dialogVisible: false,
 
       rules: {
-        required: [val => val.length > 0 || "Required"]
+        required: [val => val.length >= 0 || "Required"]
       }
     };
   },
+  computed: {
+    title() {
+      return this.editMode
+        ? "Edit Vehicle"
+        : "Add Vehicle";
+    }
+  },
   watch: {
     initialData(vehicleProp) {
-      this.newVehicle = vehicleProp;
-      this.newVehicle.license_number = vehicleProp.licenseNumber;
-      this.newVehicle.license_state = vehicleProp.state;
+      if (vehicleProp.vehicle_type_id == null || vehicleProp.licenseNumber == null) {
+        this.handleClear();
+      } else {
+        this.newVehicle = vehicleProp;
+        this.newVehicle.license_number = vehicleProp.licenseNumber;
+        this.newVehicle.license_state = vehicleProp.state;
+        this.newVehicle.vehicle_type_id = { id: vehicleProp.vehicle_type_id, type: this.findVehicleType(vehicleProp.vehicle_type_id, this.typesList).type };
+        this.newVehicle.capacity = vehicleProp.capacity;
+        this.newVehicle.mpg = vehicleProp.mpg; 
+      }
     }
   },
   props: {
@@ -179,6 +214,32 @@ export default {
     console.log(this.statesList);
   },
   methods: {
+    findVehicleType(nameKey, myArray){
+      for (var i=0; i < myArray.length; i++) {
+          if (myArray[i].id === nameKey) {
+              return myArray[i];
+          }
+      }
+    },
+    addNewVehicleType(item) {
+      this.$axios
+        .post("/vehicle-types", {
+           type: item
+        })
+        .then(result => {
+          if (result.status == 200) {
+            if (result.data.ok) {
+              this.$axios.get("/vehicle-types").then(response => {
+                response.data.map(t => this.typesList.push(t));
+              });              
+              this.newVehicle.vehicle_type_id = { id: result.data.id, type: item };
+            } else {
+              this.showDialog("Failed", result.data.msge);
+            }
+          }
+        })
+        .catch(err => this.showDialog("Failed", err));
+    },
     handleClear: function() {
       this.newVehicle.make = "";
       this.newVehicle.model = "";
@@ -200,7 +261,7 @@ export default {
             make: this.newVehicle.make,
             model: this.newVehicle.model,
             color: this.newVehicle.color,
-            vehicle_type_id: this.newVehicle.vehicle_type_id,
+            vehicle_type_id: this.newVehicle.vehicle_type_id.id,
             capacity: this.newVehicle.capacity,
             mpg: this.newVehicle.mpg,
             license_state: this.newVehicle.license_state,
@@ -224,7 +285,7 @@ export default {
             make: this.newVehicle.make,
             model: this.newVehicle.model,
             color: this.newVehicle.color,
-            vehicle_type_id: this.newVehicle.vehicle_type_id,
+            vehicle_type_id: this.newVehicle.vehicle_type_id.id,
             capacity: this.newVehicle.capacity,
             mpg: this.newVehicle.mpg,
             license_state: this.newVehicle.license_state,
