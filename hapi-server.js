@@ -907,6 +907,132 @@ async function init() {
           });
       }
     },
+    //DRIVERS (Driver-Ride)
+    {
+      method: "GET",
+      path: "/drivers-rides",
+      config: {
+        description: "Retrieve all Drivers",
+      },
+      handler: (request, h) => {
+        return Drivers.query();
+      }
+    },
+    {
+      method: "POST",
+      path: "/drivers-rides",
+      config: {
+        description: "Add a driver to a ride",
+        validate: {
+          payload: Joi.object({
+            driver_id: Joi.number().integer().required(),
+            ride_id: Joi.number().integer().required()
+          })
+        },
+        handler: async (request, h) => {
+          const newDriver = await Drivers.query().insert({
+            driver_id: request.payload.driver_id,
+            ride_id: request.payload.ride_id
+          }).returning('*');
+
+          if (newDriver) {
+            return {
+              ok: true,
+              msge: 'Added driver to ride'
+            };
+          } else {
+            return {
+              ok: false,
+              msge: 'Could not add driver to ride'
+            };
+          }
+        }
+      }
+    },
+    //PASSENGERS (Passenger-Ride)
+    {
+      method: "GET",
+      path: "/passengers-rides",
+      config: {
+        description: "Retrieve all Passengers",
+      },
+      handler: (request, h) => {
+        return Passengers.query();
+      }
+    },
+    {
+      method: "POST",
+      path: "/passengers-rides",
+      config: {
+        description: "Add a passenger to a ride",
+        validate: {
+          payload: Joi.object({
+            passenger_id: Joi.number().integer().required(),
+            ride_id: Joi.number().integer().required()
+          })
+        },
+        handler: async (request, h) => {
+          const newPassenger = await Passengers.query().insert({
+            passenger_id: request.payload.passenger_id,
+            ride_id: request.payload.ride_id
+          }).returning('*');
+
+          if (newPassenger) {
+            return {
+              ok: true,
+              msge: 'Added passenger to ride'
+            };
+          } else {
+            return {
+              ok: false,
+              msge: 'Could not add passenger to ride'
+            };
+          }
+        }
+      }
+    },
+    //AUTHORIZATION (Driver-Vehicle)
+    {
+      method: "GET",
+      path: "/drivers-vehicles",
+      config: {
+        description: "Retrieve all Authorization",
+      },
+      handler: (request, h) => {
+        return Authorization.query();
+      }
+    },
+    {
+      method: "POST",
+      path: "/drivers-vehicles",
+      config: {
+        description: "Authorize a driver for a vehicle",
+        validate: {
+          payload: Joi.object({
+            driver_id: Joi.string().required(),
+            vehicle_id: Joi.string().required()
+          })
+        },
+        handler: async (request, h) => {
+          const newVehicle = await Authorization.query().insert({
+            driver_id: request.payload.driver_id,
+            vehicle_id: request.payload.vehicle_id
+          }).returning('*');
+
+          if (newVehicle) {
+            return {
+              ok: true,
+              msge: 'Authorized driver for vehicle'
+            };
+          } else {
+            return {
+              ok: false,
+              msge: 'Could not authorize driver for vehicle'
+            };
+          }
+        }
+      }
+    }
   ]);
 
   await server.start();
