@@ -69,7 +69,7 @@ export default {
       headers: [
         { text: "Date", value: "date", width: "13%" },
         { text: "Time", value: "time", width: "13%" },
-        { text: "Driver", value: "driver", width: "16%" },
+        { text: "Driver", value: "drivers", width: "16%" },
         { text: "From", value: "from_location_name", width: "10%" },
         { text: "To", value: "to_location_name", width: "12%" },
         { text: "Passengers", value: "passengers"},
@@ -77,7 +77,8 @@ export default {
       ],
       rides: [],
       locationList: [],
-
+      drivers: [],
+      
       rideDialog: {
         show: false,
         editMode: false,
@@ -95,22 +96,40 @@ export default {
     this.$axios.get("/locations").then(response => {
       response.data.map(l => this.locationList.push(l));
       
-      this.$axios.get("/rides").then(response => {
-        this.rides = response.data.map(ride => ({
-          id: ride.id,
-          date: this.getDateFromTimestamp(ride.date),
-          time: ride.time.substring(0, 5),
-          distance: ride.distance,
-          fuel_price: ride.fuel_price,
-          fee: ride.fee,
-          vehicle_id: ride.vehicle_id,
-          from_location_id: ride.from_location_id,
-          to_location_id: ride.to_location_id,
-          to_location_name: this.findLocationById(ride.to_location_id, this.locationList).name,
-          from_location_name: this.findLocationById(ride.from_location_id, this.locationList).name
-        }));
+      this.$axios.get("/passengers").then(response => {
+        let allPassengers = response.data;
+
+        this.$axios.get("/passengers-rides").then(response => {
+          let passengers = response.data;
+
+          this.$axios.get("/drivers").then(response => {
+            let allDrivers = response.data;
+            
+            this.$axios.get("/drivers-rides").then(response => {
+              let drivers = response.data;
+              this.$axios.get("/rides").then(response => {
+                this.rides = response.data.map(ride => ({
+                  id: ride.id,
+                  date: this.getDateFromTimestamp(ride.date),
+                  time: ride.time.substring(0, 5),
+                  distance: ride.distance,
+                  fuel_price: ride.fuel_price,
+                  fee: ride.fee,
+                  vehicle_id: ride.vehicle_id,
+                  from_location_id: ride.from_location_id,
+                  to_location_id: ride.to_location_id,
+                  to_location_name: this.findLocationById(ride.to_location_id, this.locationList).name,
+                  from_location_name: this.findLocationById(ride.from_location_id, this.locationList).name,
+                  drivers: this.findDriverInDrivers(this.findDriverWithRideId(ride.id, drivers), allDrivers),
+                  passengers: this.findDriverInDrivers(this.findDriverWithRideId(ride.id, passengers), allPassengers)
+                }));
+              });
+            });
+          });
+        });
       });
     });
+    
   },
   
   methods: {
@@ -120,6 +139,20 @@ export default {
               return myArray[i];
           }
       }
+    },
+    findDriverWithRideId(id, myArray){
+      for (var i=0; i < myArray.length; i++) {
+          if (myArray[i].ride_id === id) {
+              return myArray[i].driver_id == null ? myArray[i].passenger_id : myArray[i].driver_id;
+          }
+      }
+    },
+    findDriverInDrivers(id, myArray) {
+       for (var i=0; i < myArray.length; i++) {
+           if (myArray[i].id === id) {
+               return myArray[i].first_name + " " + myArray[i].last_name;
+           }
+       }
     },
     // Display a snackbar message.
     showSnackbar(text) {
@@ -151,20 +184,30 @@ export default {
       this.$axios.get("/locations").then(response => {
         response.data.map(l => this.locationList.push(l));
         
-        this.$axios.get("/rides").then(response => {
-          this.rides = response.data.map(ride => ({
-            id: ride.id,
-            date: this.getDateFromTimestamp(ride.date),
-            time: ride.time.substring(0, 5),
-            distance: ride.distance,
-            fuel_price: ride.fuel_price,
-            fee: ride.fee,
-            vehicle_id: ride.vehicle_id,
-            from_location_id: ride.from_location_id,
-            to_location_id: ride.to_location_id,
-            to_location_name: this.findLocationById(ride.to_location_id, this.locationList).name,
-            from_location_name: this.findLocationById(ride.from_location_id, this.locationList).name
-          }));
+        this.$axios.get("/drivers").then(response => {
+          let allDrivers = response.data;
+          
+          this.$axios.get("/drivers-rides").then(response => {
+            let drivers = response.data;
+            
+            this.$axios.get("/rides").then(response => {
+              this.rides = response.data.map(ride => ({
+                id: ride.id,
+                date: this.getDateFromTimestamp(ride.date),
+                time: ride.time.substring(0, 5),
+                distance: ride.distance,
+                fuel_price: ride.fuel_price,
+                fee: ride.fee,
+                vehicle_id: ride.vehicle_id,
+                from_location_id: ride.from_location_id,
+                to_location_id: ride.to_location_id,
+                to_location_name: this.findLocationById(ride.to_location_id, this.locationList).name,
+                from_location_name: this.findLocationById(ride.from_location_id, this.locationList).name,
+                drivers: this.findDriverInDrivers(this.findDriverWithRideId(ride.id, drivers), allDrivers)
+                // passengers: 
+              }));
+            });
+          });
         });
       });
       this.rideDialog.show = false;
