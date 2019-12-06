@@ -7,6 +7,7 @@
           <v-flex shrink align-self-center>
             <v-toolbar-title>Passenger</v-toolbar-title>
           </v-flex>
+          <v-spacer></v-spacer>
           <v-flex shrink justify-self-center>
             <v-combobox
               label="Select Passenger" 
@@ -38,9 +39,27 @@
               </template>
             </v-combobox>
           </v-flex>
+          <v-spacer></v-spacer>
+          <v-flex shrink justify-self-center>
+            <v-btn color="primary" raised v-on:click.stop="">Sign Up For a Ride</v-btn>
+          </v-flex>
         </v-layout>
       </v-toolbar>
 
+      <!-- Create Passenger dialog -->
+      <v-dialog
+        persistent
+        scrollable
+        v-model="passengerDialog.show"
+        max-width="500px"
+      >
+        <PassengerForm
+          v-bind:initialData="passengerDialog.passenger"
+          v-on:cancel="cancelCreate"
+          v-on:save="savePassenger"
+        />
+      </v-dialog>
+      
       <v-snackbar v-model="snackbar.show">
         {{ snackbar.text }}
         <v-btn color="blue" text @click="snackbar.show = false">
@@ -52,9 +71,14 @@
 </template>
 
 <script>
+import PassengerForm from "../components/PassengerForm";
 
 export default {
   name: "Passenger",
+  
+  components: {
+    PassengerForm
+  },
   
   data: function() {
     return {
@@ -65,7 +89,12 @@ export default {
       
       passenger: {},
       passengers: [],
-      search: null
+      search: null,
+      
+      passengerDialog: {
+        show: false,
+        passenger: {}
+      }
     }
   },
   
@@ -83,25 +112,23 @@ export default {
     },
     
     addNewPassenger(newPassenger) {
-      console.log(newPassenger);
-      // TODO: Sign up dialog
-      // this.$axios
-      //   .post("/passengers", {
-      //      type: item
-      //   })
-      //   .then(result => {
-      //     if (result.status == 200) {
-      //       if (result.data.ok) {
-      //         this.$axios.get("/vehicle-types").then(response => {
-      //           response.data.map(t => this.typesList.push(t));
-      //         });              
-      //         this.newVehicle.vehicle_type_id = { id: result.data.id, type: item };
-      //       } else {
-      //         this.showDialog("Failed", result.data.msge);
-      //       }
-      //     }
-      //   })
-      //   .catch(err => this.showDialog("Failed", err));
+      this.activatePassengerDialog({ ...newPassenger });
+    },
+    
+    activatePassengerDialog(passenger = {}) {
+      this.passengerDialog.passenger = passenger;
+      this.passengerDialog.show = true;
+    },
+    
+    cancelCreate() {
+      this.passengerDialog.show = false;
+    },
+    
+    savePassenger(passenger) {
+      this.$axios.get("/passengers").then(response => {
+        response.data.map(t => this.passengers.push(t));
+      });
+      this.passengerDialog.show = false;
     }
   }
 };
