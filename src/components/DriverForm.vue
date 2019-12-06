@@ -129,8 +129,25 @@ export default {
       required: true
     }
   },
-
+  
+  mounted: function() {
+    this.loadData();
+  },
+   
   methods: {
+    loadData() {
+      var first = true;
+      for (var i = 0; i < Object.keys(this.initialData).length; i++) {
+        if (this.initialData[i] == " ") {
+          first = false;
+          continue;
+        } else if (first) {
+          this.newDriver.first_name += this.initialData[i]; 
+        } else if (!first) {
+          this.newDriver.last_name += this.initialData[i]; 
+        }
+      }
+    },
     
     handleClear: function() {
       this.newDriver.first_name = "";

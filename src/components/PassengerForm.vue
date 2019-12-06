@@ -122,7 +122,24 @@ export default {
     }
   },
 
+  mounted: function() {
+    this.loadData();
+  },
+  
   methods: {
+    loadData() {
+      var first = true;
+      for (var i = 0; i < Object.keys(this.initialData).length; i++) {
+        if (this.initialData[i] == " ") {
+          first = false;
+          continue;
+        } else if (first) {
+          this.newPassenger.first_name += this.initialData[i]; 
+        } else if (!first) {
+          this.newPassenger.last_name += this.initialData[i]; 
+        }
+      }
+    },
     
     handleClear: function() {
       this.newPassenger.first_name = "";

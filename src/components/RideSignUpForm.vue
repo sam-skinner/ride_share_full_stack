@@ -9,7 +9,7 @@
          <v-select 
            label="Available Rides" 
            v-model="ride_id"
-           :items="rides"
+           :items="showRides"
            item-text="to_location_name"
            item-value="id"
          >
@@ -71,6 +71,7 @@ export default {
       ride_id: "",
       
       rides: [],
+      authRides: [],
       locationList: [],
       
       newPassengerRideCreated: false,
@@ -93,8 +94,19 @@ export default {
       required: true
     }
   },
+  
+  computed: {
+    showRides() {
+      if (this.passenger.license_number != null) {
+       return this.authRides.filter(ride => ride.driver_id == null);
+     } else {
+       return this.rides;
+     }
+    }
+  },
 
   mounted: function() {
+    this.loadData();
     this.$axios.get("/locations").then(response => {
       response.data.map(l => this.locationList.push(l));
       
@@ -122,7 +134,10 @@ export default {
                   to_location_id: ride.to_location_id,
                   to_location_name: this.findLocationById(ride.to_location_id, this.locationList).name,
                   from_location_name: this.findLocationById(ride.from_location_id, this.locationList).name,
+                  driver_id: this.findDriverWithRideId(ride.id, drivers)
                 }));
+                
+                this.setupRidesArrary();
               });
             });
           });
@@ -131,7 +146,27 @@ export default {
     });
   },
   
+  updated: function() {
+    this.setupRidesArrary();
+  },
+  
   methods: {
+    loadData() {
+      this.passenger = this.initialData;
+    },
+    
+    setupRidesArrary() {
+      this.$axios.get("/drivers-vehicles").then(response => {
+        this.authRides = [];
+        for (var i = 0; i < Object.keys(this.rides).length; i++) {
+          for (var j = 0; j < Object.keys(response.data).length; j++) {
+            if (this.rides[i].vehicle_id == response.data[j].vehicle_id && this.passenger.id == response.data[j].driver_id) {
+              this.authRides.push(this.rides[i]);
+            }
+          }
+        }
+     });
+    },
     
     handleSave: function() {
       this.passengerCreated = false;
@@ -187,6 +222,14 @@ export default {
      }
     },
     
+    findDriverWithRideId(id, myArray){
+     for (var i=0; i < myArray.length; i++) {
+         if (myArray[i].ride_id === id) {
+             return myArray[i].driver_id == null ? myArray[i].passenger_id : myArray[i].driver_id;
+         }
+     }
+    },
+   
     showDialog: function(header, text) {
       this.dialogHeader = header;
       this.dialogText = text;

@@ -213,7 +213,22 @@ export default {
     });
     console.log(this.statesList);
   },
+  mounted: function() {
+    this.loadData();
+  },
   methods: {
+    loadData() {
+      if (this.initialData.vehicle_type_id == null || this.initialData.licenseNumber == null) {
+        this.handleClear();
+      } else {
+        this.newVehicle = this.initialData;
+        this.newVehicle.license_number = this.initialData.licenseNumber;
+        this.newVehicle.license_state = this.initialData.state;
+        this.newVehicle.vehicle_type_id = { id: this.initialData.vehicle_type_id, type: this.findVehicleType(this.initialData.vehicle_type_id, this.typesList).type };
+        this.newVehicle.capacity = this.initialData.capacity;
+        this.newVehicle.mpg = this.initialData.mpg; 
+      }
+    },
     findVehicleType(nameKey, myArray){
       for (var i=0; i < myArray.length; i++) {
           if (myArray[i].id === nameKey) {

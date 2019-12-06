@@ -152,7 +152,15 @@ export default {
       response.data.map(v => this.vehicleList.push(v));
     });
   },
+  mounted: function() {
+    this.loadData();
+  },
   methods: {
+    loadData() {
+      this.newRide = this.initialData;
+      this.newRide.date = this.getDateFromTimestamp(this.initialData.date);
+      this.newRide.time = this.getTimeFromTimestamp(this.initialData.time);
+    },
     handleClear: function() {
       this.newRide.date = "";
       this.newRide.time = "";

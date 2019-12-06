@@ -41,7 +41,7 @@
           </v-flex>
           <v-spacer></v-spacer>
           <v-flex shrink justify-self-end>
-            <v-btn color="primary" raised v-on:click.stop="signUp(driver)">Sign Up For a Ride</v-btn>
+            <v-btn color="primary" raised v-on:click.stop="signUp(driver)">Sign Up For a Drive</v-btn>
           </v-flex>
         </v-layout>
       </v-toolbar>
