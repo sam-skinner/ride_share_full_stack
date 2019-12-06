@@ -130,8 +130,8 @@ export default {
   watch: {
     initialData(rideProp) {
       this.newRide = rideProp;
-      // this.newRide.license_number = rideProp.licenseNumber;
-      // this.newRide.license_state = rideProp.state;
+      this.newRide.date = this.getDateFromTimestamp(rideProp.date);
+      this.newRide.time = this.getTimeFromTimestamp(rideProp.time);
     }
   },
   props: {
@@ -222,6 +222,28 @@ export default {
       if (this.rideCreated) {
         this.$router.push({ name: "rides" });
       }
+    },
+
+    getDateFromTimestamp(ts) {
+      let date = new Date(ts);
+      if (date.getTime() < 86400000) {
+        //ms in a day
+        return "";
+      }
+      let yr = date.toLocaleDateString(this.currentLanguageCode, {
+        year: "numeric"
+      });
+      let mo = date.toLocaleDateString(this.currentLanguageCode, {
+        month: "2-digit"
+      });
+      let da = date.toLocaleDateString(this.currentLanguageCode, {
+        day: "2-digit"
+      });
+      return `${yr}-${mo}-${da}`;
+    },
+
+    getTimeFromTimestamp(ts) {
+      return String(ts.substring(0, 5));
     }
   }
 };
