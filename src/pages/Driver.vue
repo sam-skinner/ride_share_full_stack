@@ -229,7 +229,7 @@ export default {
                     from_location_name: this.findLocationById(ride.from_location_id, this.locationList).name,
                     drivers: this.findDriverInDrivers(this.findDriverWithRideId(ride.id, drivers), allDrivers),
                     passengers: this.findDriverInDrivers(this.findDriverWithRideId(ride.id, passengers), allPassengers),
-                    passenger_id: this.findDriverWithRideId(ride.id, passengers)
+                    driver_id: this.findDriverWithRideId(ride.id, drivers)
                   }));
                 });
               });

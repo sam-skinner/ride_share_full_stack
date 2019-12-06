@@ -135,23 +135,44 @@ export default {
     
     handleSave: function() {
       this.passengerCreated = false;
-      this.$axios
-        .post("/passengers-rides", {
-          passenger_id: this.passenger.id,
-          ride_id: this.ride_id
-        })
-        .then(result => {
-          if (result.status == 200) {
-            if (result.data.ok) {
-              this.$emit("save");
-              this.ride_id = "";
-              this.newPassengerRideCreated = true;
-            } else {
-              this.showDialog("Failed", result.data.msge);
+      if (this.passenger.license_number != null) {
+        this.$axios
+          .post("/drivers-rides", {
+            driver_id: this.passenger.id,
+            ride_id: this.ride_id
+          })
+          .then(result => {
+            if (result.status == 200) {
+              if (result.data.ok) {
+                console.log("SAVED");
+                this.$emit("save");
+                this.ride_id = "";
+                this.newPassengerRideCreated = true;
+              } else {
+                this.showDialog("Failed", result.data.msge);
+              }
             }
-          }
-        })
-        .catch(err => this.showDialog("Failed", err));
+          })
+          .catch(err => this.showDialog("Failed", err));
+      } else {
+        this.$axios
+          .post("/passengers-rides", {
+            passenger_id: this.passenger.id,
+            ride_id: this.ride_id
+          })
+          .then(result => {
+            if (result.status == 200) {
+              if (result.data.ok) {
+                this.$emit("save");
+                this.ride_id = "";
+                this.newPassengerRideCreated = true;
+              } else {
+                this.showDialog("Failed", result.data.msge);
+              }
+            }
+          })
+          .catch(err => this.showDialog("Failed", err));
+      }
     },
     cancel: function() {
       this.ride_id = "";
