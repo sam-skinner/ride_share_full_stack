@@ -26,6 +26,9 @@
         <v-list-item v-bind:to="{ name: 'rides' }">
           <v-list-item-title>Rides</v-list-item-title>
         </v-list-item>
+        <v-list-item v-bind:to="{ name: 'authorizations' }">
+          <v-list-item-title>Authorizations</v-list-item-title>
+        </v-list-item>
       </v-list>
     </v-menu>
   </v-app-bar>

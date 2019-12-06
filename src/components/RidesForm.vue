@@ -53,7 +53,14 @@
               :items="vehicleList"
               item-text="license_number"
               item-value="id"
-            ></v-select>
+            >
+            <template slot='selection' slot-scope='{ item }'>
+              {{ item.make }} {{ item.model }}
+            </template>
+            <template slot='item' slot-scope='{ item }'>
+              {{ item.make }} {{ item.model }}
+            </template>
+          </v-select>
           </v-col>
         </v-row>
       </form>
